@@ -26,7 +26,9 @@ function App() {
       .split("; ")
       .find((row) => row.startsWith("hexToken="))
       ?.split("=")[1];
-    axios.defaults.headers.common["Authorization"] = token;
+    if (token) {
+      axios.defaults.headers.common["Authorization"] = token;
+    }
   }, []);
 
   useEffect(() => {
@@ -220,7 +222,9 @@ function App() {
       const { token, expired } = res.data;
 
       // 將token存入cookie，供後續重新整理頁面時使用
-      document.cookie = `hexToken=${token}; expires=${new Date(expired)}`;
+      document.cookie = `hexToken=${token}; expires=${new Date(
+        expired
+      )};  path=/`;
 
       // 由於登入後會立刻呼叫API取得產品資料，
       // 因此需要即時設定axios的 Authorization。
@@ -351,7 +355,7 @@ export default App;
 
 //確保欄位都有預設值，避免undefined而噴錯
 //A component is changing a controlled input to be uncontrolled.
-//This is likely caused by the value changing
+// This is likely caused by the value changing
 //在 React 中，所謂的「受控組件（Controlled Component）」是指 Input 的 value 是由 React 的 state 掌控的。
 //正常狀態：value 是一個字串（甚至是空字串 ""）
 //出事狀態： 當你點開編輯時，如果 product 裡面的某個欄位（例如 description 或 content）
